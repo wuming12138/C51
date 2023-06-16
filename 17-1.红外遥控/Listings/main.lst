@@ -1,0 +1,59 @@
+C51 COMPILER V9.54   MAIN                                                                  01/18/2023 16:35:45 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\KeilC51\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "IR.h"
+   3          #include "LCD1602.h"
+   4          
+   5          unsigned char Address;
+   6          unsigned char Command;
+   7          unsigned char Num;
+   8          
+   9          void main()
+  10          {
+  11   1        LCD_Init();
+  12   1        IR_Init();
+  13   1      
+  14   1        while(1)
+  15   1        {
+  16   2          if(IR_GetDateFlag() || IR_GetRepeatFlag())
+  17   2          {
+  18   3            Address=IR_GetAddress();
+  19   3            Command=IR_GetCommand();
+  20   3            
+  21   3            LCD_ShowHexNum(2,1,Address,2);
+  22   3            LCD_ShowHexNum(2,5,Command,2);
+  23   3            if(Command == 0x15)
+  24   3            {
+  25   4              Num--;
+  26   4            }
+  27   3            if(Command == 0x09)
+  28   3            {
+  29   4              Num++;
+  30   4            }
+  31   3            LCD_ShowNum(2,9,Num,3);
+  32   3          }
+  33   2        }
+  34   1      }
+  35          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     89    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

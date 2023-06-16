@@ -1,0 +1,98 @@
+C51 COMPILER V9.54   MAIN                                                                  12/28/2022 21:32:24 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\KeilC51\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "LCD1602.h"
+   3          #include "DS1302.h"
+   4          #include "Delay.h"
+   5          unsigned char sec = 0, min = 0, hour, mod_CH = 0, mod_start = 1;
+   6          void main()
+   7          {
+   8   1      
+   9   1        DS1302_Init();
+  10   1        LCD_Init();
+  11   1        DS1302_WriteByte(0X8E, 0x00);
+  12   1        DS1302_WriteByte(0x80, 0x00); //sec
+  13   1        DS1302_WriteByte(0x82, 0x00); //min
+  14   1        DS1302_WriteByte(0x84, 0x00); //hour
+  15   1        LCD_ShowChar(2,3,':');
+  16   1        LCD_ShowChar(2,6,':');
+  17   1        while(1)
+  18   1        {
+  19   2          //模式0下开始计时，模式1下清零
+  20   2          if(mod_start == 0)
+  21   2          {
+  22   3            sec = DS1302_ReadByte(0x81)%16 + ((DS1302_ReadByte(0x81)/16)%8)*10;
+  23   3            min = DS1302_ReadByte(0x83)%16 + (DS1302_ReadByte(0x83)/16)*10;
+  24   3            hour = DS1302_ReadByte(0x85)%16 + (DS1302_ReadByte(0x85)/16)*10;
+  25   3            LCD_ShowNum(2,7,sec,2);
+  26   3            LCD_ShowNum(2,4,min,2);
+  27   3            LCD_ShowNum(2,1,hour,2);
+  28   3          }
+  29   2          else
+  30   2          {
+  31   3            DS1302_WriteByte(0x80, 0x00); //sec
+  32   3            DS1302_WriteByte(0x82, 0x00); //min
+  33   3            DS1302_WriteByte(0x84, 0x00); //hour
+  34   3            LCD_ShowNum(2,7,0,2);
+  35   3            LCD_ShowNum(2,4,0,2);
+  36   3            LCD_ShowNum(2,1,0,2);
+  37   3          }
+  38   2          
+  39   2          //按下第二个键暂停
+  40   2          if(P3_0 == 0)
+  41   2          {
+  42   3            Delay(20);
+  43   3            while(P3_0 == 0);
+  44   3            Delay(20);
+  45   3            if(mod_CH == 0)   //mod_CH为0时暂停
+  46   3            {
+  47   4              DS1302_WriteByte(0x80, DS1302_ReadByte(0x81) | 0x80);
+  48   4              mod_CH = 1;
+  49   4            }
+  50   3            else              //mod_CH为1时开始
+  51   3            {
+  52   4              DS1302_WriteByte(0x80, DS1302_ReadByte(0x81) & 0x7F);
+  53   4              mod_CH = 0;
+  54   4            }
+C51 COMPILER V9.54   MAIN                                                                  12/28/2022 21:32:24 PAGE 2   
+
+  55   3          }
+  56   2      
+  57   2          
+  58   2          //按下第一个按键模式切换，0或1循环
+  59   2          if(P3_1 == 0)
+  60   2          {
+  61   3            Delay(20);
+  62   3            while(P3_1 == 0);
+  63   3            Delay(20);
+  64   3            
+  65   3            mod_start++;
+  66   3            if(mod_start >= 2)
+  67   3            {
+  68   4              mod_start = 0;
+  69   4            }
+  70   3          }
+  71   2        }
+  72   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    359    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

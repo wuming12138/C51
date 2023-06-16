@@ -1,0 +1,78 @@
+C51 COMPILER V9.54   DS1302                                                                12/28/2022 19:59:02 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE DS1302
+OBJECT MODULE PLACED IN .\Objects\DS1302.obj
+COMPILER INVOKED BY: D:\KeilC51\C51\BIN\C51.EXE DS1302.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\DS
+                    -1302.lst) TABS(2) OBJECT(.\Objects\DS1302.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          
+   3          sbit DS1302_SCLK = P3^6;
+   4          sbit DS1302_CE = P3^5;
+   5          sbit DS1302_IO = P3^4;
+   6          
+   7          void DS1302_Init()
+   8          {
+   9   1        DS1302_SCLK = 0;
+  10   1        DS1302_CE = 0;
+  11   1      }
+  12          
+  13          void DS1302_WriteByte(unsigned char Command, Date)
+  14          {
+  15   1        unsigned char i = 0;
+  16   1        DS1302_CE = 1;
+  17   1        for(i = 0; i < 8; i++)
+  18   1        {
+  19   2          DS1302_IO = Command&(0x01<<i);
+  20   2          DS1302_SCLK = 1;
+  21   2          DS1302_SCLK = 0;
+  22   2        }
+  23   1        for(i = 0; i < 8; i++)
+  24   1        {
+  25   2          DS1302_IO = Date&(0x01<<i);
+  26   2          DS1302_SCLK = 1;
+  27   2          DS1302_SCLK = 0;
+  28   2        }
+  29   1        DS1302_CE = 0;
+  30   1      }
+  31          
+  32          unsigned char DS1302_ReadByte(unsigned char Command)
+  33          {
+  34   1        unsigned char i = 0, Date = 0x00;
+  35   1        DS1302_CE = 1;
+  36   1        for(i = 0; i < 8; i++)
+  37   1        {
+  38   2          DS1302_IO = Command&(0x01<<i);
+  39   2          DS1302_SCLK = 0;
+  40   2          DS1302_SCLK = 1;
+  41   2        }
+  42   1        for(i = 0; i < 8; i++)
+  43   1        {
+  44   2          DS1302_SCLK = 1;
+  45   2          DS1302_SCLK = 0;
+  46   2          if(DS1302_IO){Date |= (0x01<<i);};
+  47   2        }
+  48   1        DS1302_CE = 0;
+  49   1        DS1302_IO = 0;
+  50   1        return Date;
+  51   1      }
+  52          
+
+
+C51 COMPILER V9.54   DS1302                                                                12/28/2022 19:59:02 PAGE 2   
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    167    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

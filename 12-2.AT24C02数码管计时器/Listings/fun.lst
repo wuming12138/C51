@@ -1,0 +1,13 @@
+C51 COMPILER V9.54   FUN                                                                   01/14/2023 16:51:36 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE FUN
+OBJECT MODULE PLACED IN .\Objects\fun.obj
+COMPILER INVOKED BY: D:\KeilC51\C51\BIN\C51.EXE fun.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\fun.l
+                    -st) TABS(2) OBJECT(.\Objects\fun.obj)
+
+line level    source
+
+*** ERROR C318 OF fun.c: can't open file 'fun.c'
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

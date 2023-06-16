@@ -1,0 +1,124 @@
+C51 COMPILER V9.54   MAIN                                                                  01/14/2023 18:31:33 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\KeilC51\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Nixie.h"
+   3          #include "Delay.h"
+   4          #include "AT24C02.h"
+   5          #include "Key.h"
+   6          #include "Timer0.h"
+   7          unsigned char KeyNum;
+   8          unsigned char min, sec, csec;
+   9          unsigned char RunFlag=1;
+  10          void main()
+  11          {
+  12   1        Timer0_Init();
+  13   1        while(1)
+  14   1        {
+  15   2          KeyNum = Key();
+  16   2          if(KeyNum==1)
+  17   2          {
+  18   3            RunFlag = !RunFlag;
+  19   3          }
+  20   2          if(KeyNum==2)
+  21   2          {
+  22   3            min = 0;
+  23   3            sec = 0;
+  24   3            csec = 0;
+  25   3            RunFlag = 0;
+  26   3          }
+  27   2          if(KeyNum==3)
+  28   2          {
+  29   3            AT24C02_SendByte(1,min);
+  30   3            Delay(5);
+  31   3            AT24C02_SendByte(2,sec);
+  32   3            Delay(5);
+  33   3            AT24C02_SendByte(3,csec);
+  34   3            Delay(5);
+  35   3          }
+  36   2          if(KeyNum==4)
+  37   2          {
+  38   3            min = AT24C02_ReadByte(1);
+  39   3            sec = AT24C02_ReadByte(2);
+  40   3            csec = AT24C02_ReadByte(3);
+  41   3          }
+  42   2          Nixie_SetBuf(1,min/10);
+  43   2          Nixie_SetBuf(2,min%10);
+  44   2          Nixie_SetBuf(3,11);
+  45   2          Nixie_SetBuf(4,sec/10);
+  46   2          Nixie_SetBuf(5,sec%10);
+  47   2          Nixie_SetBuf(6,11);
+  48   2          Nixie_SetBuf(7,csec/10);
+  49   2          Nixie_SetBuf(8,csec%10);
+  50   2        }
+  51   1      }
+  52          
+  53          void Time_Loop()
+  54          {
+C51 COMPILER V9.54   MAIN                                                                  01/14/2023 18:31:33 PAGE 2   
+
+  55   1        if(RunFlag == 1)
+  56   1        {
+  57   2          csec++;
+  58   2          if(csec>=100)
+  59   2          {
+  60   3            csec=0;
+  61   3            sec++;
+  62   3            if(sec>=60)
+  63   3            {
+  64   4              sec=0;
+  65   4              min++;
+  66   4              if(min>=60)
+  67   4              {
+  68   5                min=0;
+  69   5              }
+  70   4            }
+  71   3          }
+  72   2        }
+  73   1      }
+  74          
+  75          void Timer0_Routine() interrupt 1
+  76          {
+  77   1        static unsigned int T0Count1, T0Count2, T0Count3;
+  78   1        TL0 = 0x66;
+  79   1        TH0 = 0xFC;
+  80   1        T0Count1++;
+  81   1        if(T0Count1>=20)
+  82   1        {
+  83   2          T0Count1=0;
+  84   2          Key_Loop();
+  85   2        }
+  86   1        T0Count2++;
+  87   1        if(T0Count2>=2)
+  88   1        {
+  89   2          T0Count2=0;
+  90   2          Nixie_Loop();
+  91   2        }
+  92   1        T0Count3++;
+  93   1        if(T0Count3>=10)
+  94   1        {
+  95   2          T0Count3=0;
+  96   2          Time_Loop();
+  97   2        }
+  98   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    413    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     11    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

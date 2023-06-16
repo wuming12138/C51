@@ -1,0 +1,65 @@
+C51 COMPILER V9.54   MAIN                                                                  12/27/2022 17:53:10 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\KeilC51\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          
+   4          sbit SCK = P3^6;
+   5          sbit RCK = P3^5;
+   6          sbit SER = P3^4;
+   7          
+   8          void _74H595_(unsigned char Byte)
+   9          {
+  10   1        unsigned char i = 0;
+  11   1        for(i = 0; i < 8; i++)
+  12   1        {
+  13   2          SER = Byte&(0x80>>i); 
+  14   2          SCK = 1;
+  15   2          SCK = 0;
+  16   2        }
+  17   1        RCK = 1;
+  18   1        RCK = 0;
+  19   1      }
+  20          void MatrixLED_ShowCol(unsigned char col, Date)
+  21          {
+  22   1        _74H595_(Date);
+  23   1        P0 = ~(0x80>>col);
+  24   1      
+  25   1        Delay(1);
+  26   1        P0 = 0xFF;
+  27   1      }
+  28          
+  29          void main()
+  30          {
+  31   1        SCK = 0;
+  32   1        RCK = 0;
+  33   1      
+  34   1        while(1)
+  35   1        {
+  36   2          MatrixLED_ShowCol(0,0x80);
+  37   2          MatrixLED_ShowCol(1,0x40);
+  38   2          MatrixLED_ShowCol(2,0x20);
+  39   2          MatrixLED_ShowCol(3,0x10);
+  40   2        }
+  41   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    121    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

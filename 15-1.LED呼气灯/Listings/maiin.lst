@@ -1,0 +1,58 @@
+C51 COMPILER V9.54   MAIIN                                                                 01/17/2023 14:12:56 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIIN
+OBJECT MODULE PLACED IN .\Objects\maiin.obj
+COMPILER INVOKED BY: D:\KeilC51\C51\BIN\C51.EXE maiin.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\mai
+                    -in.lst) TABS(2) OBJECT(.\Objects\maiin.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          
+   3          void Delay(unsigned char x)
+   4          {
+   5   1        while(x--);
+   6   1      }
+   7            
+   8          void main()
+   9          {
+  10   1        unsigned char Time, i;
+  11   1        while(1)
+  12   1        {
+  13   2          for(Time=0;Time<100;Time++)
+  14   2          {
+  15   3            for(i=0;i<20;i++)
+  16   3            {
+  17   4              P2_0=0;
+  18   4              Delay(Time);
+  19   4              P2_0=1;
+  20   4              Delay(100-Time);
+  21   4            }
+  22   3          }
+  23   2          for(Time=0;Time<100;Time++)
+  24   2          {
+  25   3            for(i=0;i<20;i++)
+  26   3            {
+  27   4              P2_0=1;
+  28   4              Delay(Time);
+  29   4              P2_0=0;
+  30   4              Delay(100-Time);
+  31   4            }
+  32   3          }
+  33   2        }
+  34   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     70    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

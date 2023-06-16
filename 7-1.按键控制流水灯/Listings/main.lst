@@ -1,0 +1,89 @@
+C51 COMPILER V9.54   MAIN                                                                  12/24/2022 19:13:11 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: D:\KeilC51\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) T
+                    -ABS(2)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Timer0_Init.h"
+   3          #include "Key.h"
+   4          #include <INTRINS.H>
+   5          unsigned char KeyNum = 0, LEDmod = 0;
+   6          void main()
+   7          {
+   8   1        
+   9   1        P2=0xFE;
+  10   1        
+  11   1        Timer0_Init();
+  12   1        while(1)
+  13   1        {
+  14   2          KeyNum = Key();
+  15   2          if(KeyNum)
+  16   2          {
+  17   3            if(KeyNum==1)
+  18   3            {
+  19   4              LEDmod++;
+  20   4              if(LEDmod>1)LEDmod=0;
+  21   4            }
+  22   3          }
+  23   2        }
+  24   1      }
+  25          
+  26          void Timer0() interrupt 1
+  27          {
+  28   1        static unsigned int T0count = 0,count = 0;
+  29   1        TH0=64535/256;
+  30   1        TL0=64535%256+1;
+  31   1        T0count++;  
+  32   1        if(T0count >= 500)
+  33   1        {
+  34   2          if(LEDmod==0)
+  35   2          {
+  36   3      //      P2=~(0x01<<count);
+  37   3      //      count++;
+  38   3      //      if(count==8)
+  39   3      //      {
+  40   3      //        count = 0;
+  41   3      //      }
+  42   3            
+  43   3            P2=_crol_(P2,1);
+  44   3          }
+  45   2            
+  46   2          if(LEDmod==1)
+  47   2          {
+  48   3      //      P2=~(0x01<<count);
+  49   3      //      if(count==0)
+  50   3      //      {
+  51   3      //        count = 8;
+  52   3      //      }
+  53   3      //      if(count>0)
+  54   3      //      {
+C51 COMPILER V9.54   MAIN                                                                  12/24/2022 19:13:11 PAGE 2   
+
+  55   3      //        count--;
+  56   3      //      }
+  57   3            
+  58   3            P2=_cror_(P2,1);
+  59   3          }
+  60   2          T0count=0;
+  61   2        }
+  62   1      }
+*** WARNING C280 IN LINE 28 OF main.c: 'count': unreferenced local variable
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    116    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

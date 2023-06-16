@@ -1,0 +1,92 @@
+C51 COMPILER V9.54   ONEWIRE                                                               01/15/2023 16:37:27 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE ONEWIRE
+OBJECT MODULE PLACED IN .\Objects\Onewire.obj
+COMPILER INVOKED BY: D:\KeilC51\C51\BIN\C51.EXE Onewire.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\O
+                    -newire.lst) TABS(2) OBJECT(.\Objects\Onewire.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          
+   3          sbit DQ=P3^7;
+   4          
+   5          unsigned char Onewire_Init()
+   6          {
+   7   1        unsigned char i, Ackbit;
+   8   1        EA = 0;
+   9   1        DQ = 1;
+  10   1        DQ = 0;
+  11   1        i = 227;while (--i);    //500us
+  12   1        DQ = 1;
+  13   1        i = 29;while (--i);     //70us
+  14   1        Ackbit  = DQ;
+  15   1        i = 227;while (--i);    //500us 
+  16   1        return Ackbit;
+  17   1        EA = 1;
+  18   1      }
+  19          
+  20          void Onewire_SendBit(unsigned char Bit)
+  21          {
+  22   1        unsigned char i;
+  23   1        EA = 0;
+  24   1        DQ = 0;
+  25   1        i = 4;while (--i);      //10us
+  26   1        DQ = Bit;
+  27   1        i = 24;while (--i);     //50us
+  28   1        DQ = 1;
+  29   1        EA = 1;
+  30   1      }
+  31          
+  32          unsigned char Onewire_ReceiveBit()
+  33          {
+  34   1        unsigned char Bit, i;
+  35   1        EA = 0;
+  36   1        DQ = 0;
+  37   1        i = 2;while (--i);      //5us
+  38   1        DQ = 1;
+  39   1        i = 3;while (--i);      //5us
+  40   1        Bit = DQ;
+  41   1        i = 24;while (--i);     //50us
+  42   1        return Bit;
+  43   1        EA = 1;
+  44   1      }
+  45          
+  46          void Onewire_SendByte(unsigned char Byte)
+  47          {
+  48   1        unsigned char i;
+  49   1        for(i=0;i<8;i++)
+  50   1        {
+  51   2          Onewire_SendBit(Byte&(0x01<<i));
+  52   2        }
+  53   1      }
+  54          
+C51 COMPILER V9.54   ONEWIRE                                                               01/15/2023 16:37:27 PAGE 2   
+
+  55          unsigned char Onewire_ReceiveByte()
+  56          {
+  57   1        unsigned char Byte=0x00, i;
+  58   1        for(i=0;i<8;i++)
+  59   1        {
+  60   2          if(Onewire_ReceiveBit())
+  61   2            Byte|=(0x01<<i);
+  62   2        }
+  63   1        return Byte;
+  64   1      }
+*** WARNING C294 IN LINE 17 OF Onewire.c: unreachable code
+*** WARNING C294 IN LINE 43 OF Onewire.c: unreachable code
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    130    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)
